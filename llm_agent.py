@@ -25,12 +25,19 @@ def decide_action(ascii_scene: str, reached: bool) -> str:
             "Allowed actions: forward, brake, left, right, stop.\n"
             "Provide exactly one action keyword as JSON: {\"action\": \"…\"}."
         )
-
+    print("proc 1 done")
+    # Combine system and user prompts since --system/--user are not supported
+    full_prompt = system + "\n\n" + user
     proc = subprocess.run(
-        ["ollama", "generate", "llama2", "--system", system,
-         "--user", user, "--json"],
+        ["ollama", "run", "deepseek-r1:1.5b", full_prompt],
         capture_output=True, text=True
     )
+    print("proc 2 done")
     if proc.returncode != 0:
         raise RuntimeError(f"Ollama error: {proc.stderr}")
-    return json.loads(proc.stdout)
+    # Extract JSON from output
+    import re
+    match = re.search(r'\{.*?\}', proc.stdout, re.DOTALL)
+    if not match:
+        raise RuntimeError(f"No JSON found in Ollama output: {proc.stdout}")
+    return json.loads(match.group(0))

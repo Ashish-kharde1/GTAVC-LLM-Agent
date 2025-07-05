@@ -12,9 +12,13 @@ def main():
     while True:
         frame = capture_frame()
         ascii_scene = to_ascii(frame, new_width=80)
+        print("screen captured")
+
 
         # ask LLM what to do
+        print("llm running")
         resp = decide_action(ascii_scene, reached_vehicle)
+        print("llm done")
         action = resp.get("action")
         direction = resp.get("direction")  # you'll see it in logs
 

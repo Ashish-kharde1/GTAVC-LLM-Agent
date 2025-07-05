@@ -16,7 +16,7 @@ def to_ascii(img, new_width=80):
     pil = pil.resize((new_width, new_height))
     pixels = np.array(pil)
     # map each pixel to a char
-    chars = [ASCII_CHARS[pix * len(ASCII_CHARS) // 256] for pix in pixels.flatten()]
+    chars = [ASCII_CHARS[int(pix) * len(ASCII_CHARS) // 256] for pix in pixels.flatten()]
     # build the string
     lines = [
         "".join(chars[i : i + new_width])
